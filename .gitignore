@@ -416,3 +416,20 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+# --- React Native / Frontend ---
+node_modules/
+.expo/
+npm-debug.log
+yarn-error.log
+
+# --- C / C++ / Donanım Simülasyonu (EE Ekibi İçin) ---
+*.hex
+*.elf
+*.bin
+*.log
+*.pdsbak  # Proteus yedek dosyaları
+*.pdsprj.workspace # Proteus çalışma alanı logları
+
+# --- Genel İşletim Sistemi ---
+.DS_Store
+Thumbs.db
