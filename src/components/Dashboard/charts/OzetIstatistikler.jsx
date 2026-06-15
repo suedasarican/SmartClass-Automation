@@ -1,17 +1,5 @@
-// ==============================================================
-//  src/components/Dashboard/charts/OzetIstatistikler.jsx
-//
-//  Grafiğin üst kısmında yer alan 3 istatistik rozetleri:
-//    • Klima Çalışma Süresi (pembe/rose, extrabold)
-//    • Ortalama Sıcaklık
-//    • Doluluk Oranı
-// ==============================================================
-
 import { Timer, Thermometer, BarChart2 } from "lucide-react";
 
-/**
- * Tek bir istatistik rozeti
- */
 function StatBadge({ icon: Icon, iconColor, label, value, valueColor, bgColor, borderColor, sub }) {
   return (
     <div
@@ -21,7 +9,6 @@ function StatBadge({ icon: Icon, iconColor, label, value, valueColor, bgColor, b
         bgColor, borderColor,
       ].join(" ")}
     >
-      {/* İkon + etiket */}
       <div className="flex items-center gap-2">
         <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${bgColor}`}>
           <Icon className={`h-3.5 w-3.5 ${iconColor}`} strokeWidth={2.5} />
@@ -31,12 +18,10 @@ function StatBadge({ icon: Icon, iconColor, label, value, valueColor, bgColor, b
         </span>
       </div>
 
-      {/* Büyük değer */}
       <p className={`text-2xl font-extrabold tracking-tight ${valueColor}`}>
         {value}
       </p>
 
-      {/* Alt açıklama */}
       {sub && (
         <p className="text-[11px] text-slate-400">{sub}</p>
       )}
@@ -44,13 +29,9 @@ function StatBadge({ icon: Icon, iconColor, label, value, valueColor, bgColor, b
   );
 }
 
-/**
- * @param {{ klimaSure: string, ortSicaklik: string, dolulukOrani: number }} props
- */
 export default function OzetIstatistikler({ klimaSure, ortSicaklik, dolulukOrani }) {
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      {/* 1. Klima Çalışma Süresi */}
       <StatBadge
         icon={Timer}
         iconColor="text-rose-500"
@@ -61,8 +42,6 @@ export default function OzetIstatistikler({ klimaSure, ortSicaklik, dolulukOrani
         borderColor="border-rose-100"
         sub="Bugün toplam aktif süre"
       />
-
-      {/* 2. Ort. Sıcaklık */}
       <StatBadge
         icon={Thermometer}
         iconColor="text-amber-500"
@@ -73,8 +52,6 @@ export default function OzetIstatistikler({ klimaSure, ortSicaklik, dolulukOrani
         borderColor="border-amber-100"
         sub="Gün geneli ortalama"
       />
-
-      {/* 3. Doluluk Oranı */}
       <StatBadge
         icon={BarChart2}
         iconColor="text-purple-500"

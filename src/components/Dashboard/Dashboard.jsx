@@ -1,70 +1,62 @@
-// ==============================================================
-//  src/components/Dashboard/Dashboard.jsx
-//
-//  Akıllı Sınıf Yönetici Paneli — Ana Sayfa
-//  Üst satır: 4 durum kartı (Firebase Realtime Data)
-//  Alt kısım: AnalizGrafigi (Recharts) + Etkinlik Günlüğü
-// ==============================================================
-
 import { useState } from "react";
-import { useSinifVerisi } from "../../hooks/useSinifVerisi";
-import { useGecmisVeri } from "../../hooks/useGecmisVeri"; // Yeni eklenen geçmiş veri hook'u
-import { School, Wifi, WifiOff, RefreshCw, ChevronDown } from "lucide-react";
+import { useSinifVerisi }  from "../../hooks/useSinifVerisi";
+import { useGecmisVeri }   from "../../hooks/useGecmisVeri";
+import { School, Wifi, WifiOff, RefreshCw, ChevronDown, Sparkles } from "lucide-react";
 import { cn } from "../../utils/cn";
 
-import DolulukKarti from "./cards/DolulukKarti";
-import SicaklikKarti from "./cards/SicaklikKarti";
-import IsikKarti from "./cards/IsikKarti";
+import DolulukKarti        from "./cards/DolulukKarti";
+import SicaklikKarti       from "./cards/SicaklikKarti";
+import IsikKarti           from "./cards/IsikKarti";
 import AktifSistemlerKarti from "./cards/AktifSistemlerKarti";
-import AnalizGrafigi from "./charts/AnalizGrafigi";
-import EtkinlikGunlugu from "./EtkinlikGunlugu";
+import AIEnerjiKarti       from "./cards/AIEnerjiKarti";
+import AnalizGrafigi       from "./charts/AnalizGrafigi";
+import EtkinlikGunlugu     from "./EtkinlikGunlugu";
 
-// ---------------------------------------------------------------
-//  Mevcut sınıf seçenekleri — ileride Firebase'den dinamik çekilebilir
-// ---------------------------------------------------------------
 const SINIFLAR = ["A101", "A102", "B201", "B202", "C301"];
 
 export default function Dashboard() {
   const [seciliSinif, setSeciliSinif] = useState("A101");
 
-  // Canlı (anlık) verileri çeken mevcut hook
   const { veri, yukleniyor, hata, sonGuncelleme } = useSinifVerisi(seciliSinif);
-
-  // Firebase /loglar düğümünden biriken tüm geçmişi dizi (array) olarak çeken yeni hook
   const gercekGecmisVeriler = useGecmisVeri(seciliSinif);
 
   return (
-    <div className="min-h-screen bg-[#060d1f] text-slate-100">
-      <div className="dashboard-container px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen" style={{
+      background: "linear-gradient(135deg, #fdf2f4 0%, #fff5f7 35%, #f5f3ff 100%)",
+      backgroundAttachment: "fixed"
+    }}>
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-rose-200/25 blur-3xl" />
+        <div className="absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-violet-200/20 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-pink-200/20 blur-3xl" />
+      </div>
 
-        {/* ======================================================
-            HEADER: Logo + Başlık + Bağlantı Durumu
-        ====================================================== */}
+      <div className="dashboard-container relative px-4 py-6 sm:px-6 lg:px-8">
+
         <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          {/* Sol: Logo + Başlık */}
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600/20 ring-1 ring-blue-500/40">
-              <School className="h-6 w-6 text-blue-400" />
+            <div className={cn(
+              "flex h-11 w-11 items-center justify-center rounded-xl",
+              "bg-gradient-to-br from-rose-400 to-pink-500",
+              "shadow-md shadow-rose-200"
+            )}>
+              <School className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Akıllı Sınıf</h1>
-              <p className="text-xs text-slate-500">Otomasyon & Analiz Sistemi</p>
+              <h1 className="text-xl font-bold text-gray-800">Akıllı Sınıf</h1>
+              <p className="text-xs text-gray-400">Otomasyon &amp; Analiz Sistemi</p>
             </div>
           </div>
 
-          {/* Sağ: Bağlantı durumu + Son güncelleme */}
           <div className="flex flex-wrap items-center gap-3">
-            {/* Bağlantı indikatörü */}
-            <div
-              className={cn(
-                "flex items-center gap-2 rounded-xl border px-3 py-2 text-sm",
-                hata
-                  ? "border-red-500/30 bg-red-500/10 text-red-400"
-                  : yukleniyor
-                    ? "border-slate-600/40 bg-slate-800/50 text-slate-400"
-                    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              )}
-            >
+            <div className={cn(
+              "flex items-center gap-2 rounded-xl border px-3 py-2 text-sm backdrop-blur-sm",
+              hata
+                ? "border-red-200 bg-red-50 text-red-500"
+                : yukleniyor
+                ? "border-gray-200 bg-gray-50 text-gray-500"
+                : "border-emerald-200 bg-emerald-50 text-emerald-600"
+            )}>
               {hata ? (
                 <WifiOff className="h-4 w-4" />
               ) : yukleniyor ? (
@@ -77,25 +69,17 @@ export default function Dashboard() {
               </span>
             </div>
 
-            {/* Son güncelleme */}
             {sonGuncelleme && !yukleniyor && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-gray-400">
                 Son: {sonGuncelleme.toLocaleTimeString("tr-TR")}
               </span>
             )}
           </div>
         </header>
 
-        {/* ======================================================
-            SINIF SEÇİCİ + ZAMAN DAMGASİ
-        ====================================================== */}
         <section className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {/* Sınıf seçici */}
           <div className="flex items-center gap-2">
-            <label
-              htmlFor="sinif-secici"
-              className="text-sm font-medium text-slate-400"
-            >
+            <label htmlFor="sinif-secici" className="text-sm font-medium text-gray-500">
               Sınıf:
             </label>
             <div className="relative">
@@ -105,82 +89,85 @@ export default function Dashboard() {
                 onChange={(e) => setSeciliSinif(e.target.value)}
                 className={cn(
                   "appearance-none cursor-pointer rounded-xl border px-4 py-2 pr-9",
-                  "bg-[#112244] border-[#1e3a6e] text-white text-sm font-semibold",
-                  "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
-                  "transition-colors hover:bg-[#152a52]"
+                  "bg-white/80 border-rose-200/60 text-gray-700 text-sm font-semibold backdrop-blur-sm",
+                  "focus:outline-none focus:ring-2 focus:ring-rose-300/50 focus:border-rose-300",
+                  "transition-colors hover:bg-white/95"
                 )}
               >
                 {SINIFLAR.map((id) => (
-                  <option key={id} value={id}>
-                    {id}
-                  </option>
+                  <option key={id} value={id}>{id}</option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             </div>
           </div>
 
-          {/* Zaman damgası */}
           {veri?.zaman_damgasi && !yukleniyor && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-gray-400">
               ESP32 son veri:{" "}
-              <span className="text-slate-400">
+              <span className="text-gray-600 font-medium">
                 {new Date(veri.zaman_damgasi).toLocaleString("tr-TR")}
               </span>
             </p>
           )}
         </section>
 
-        {/* ======================================================
-            HATA MESAJI
-        ====================================================== */}
         {hata && (
-          <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+          <div className={cn(
+            "mb-6 flex items-start gap-3 rounded-xl border p-4",
+            "border-red-200 bg-red-50/80 backdrop-blur-sm"
+          )}>
             <WifiOff className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-400" />
             <div>
-              <p className="text-sm font-medium text-red-300">Firebase bağlantı hatası</p>
-              <p className="mt-0.5 text-xs text-red-400/70">{hata.message}</p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="text-sm font-medium text-red-600">Firebase bağlantı hatası</p>
+              <p className="mt-0.5 text-xs text-red-400">{hata.message}</p>
+              <p className="mt-1 text-xs text-gray-400">
                 .env dosyasındaki yapılandırmayı ve Firebase Realtime Database kurallarını kontrol edin.
               </p>
             </div>
           </div>
         )}
 
-        {/* ======================================================
-            4 DURUM KARTI — Responsive grid
-        ====================================================== */}
         <section
           aria-label="Anlık Durum Kartları"
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
-          <DolulukKarti veri={veri} yukleniyor={yukleniyor} />
-          <SicaklikKarti veri={veri} yukleniyor={yukleniyor} />
-          <IsikKarti veri={veri} yukleniyor={yukleniyor} />
+          <DolulukKarti        veri={veri} yukleniyor={yukleniyor} />
+          <SicaklikKarti       veri={veri} yukleniyor={yukleniyor} />
+          <IsikKarti           veri={veri} yukleniyor={yukleniyor} />
           <AktifSistemlerKarti veri={veri} yukleniyor={yukleniyor} />
         </section>
 
-        {/* ======================================================
-            ANALİTİK BÖLÜM: Grafik + Etkinlik Günlüğü
-        ====================================================== */}
-        <section className="mt-6 grid grid-cols-1 gap-5 xl:grid-cols-3">
-          {/* Geniş grafik — 2/3 genişlik. Gerçek log dizisi prop olarak gönderildi */}
+        <section className="mt-5" aria-label="Yapay Zeka Enerji Optimizasyonu">
+          <div className="mb-3 flex items-center gap-2">
+            <div className={cn(
+              "flex h-7 w-7 items-center justify-center rounded-lg",
+              "bg-gradient-to-br from-violet-500 to-fuchsia-500"
+            )}>
+              <Sparkles className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+            </div>
+            <h2 className="text-sm font-bold text-gray-700">
+              Yapay Zeka Enerji Optimizasyonu
+            </h2>
+            <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-[10px] font-bold text-violet-600 ring-1 ring-violet-200">
+              BETA
+            </span>
+          </div>
+          <AIEnerjiKarti veri={veri} yukleniyor={yukleniyor} />
+        </section>
+
+        <section className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-3">
           <div className="xl:col-span-2">
             <AnalizGrafigi sinifId={seciliSinif} grafikVerisi={gercekGecmisVeriler} />
           </div>
-
-          {/* Etkinlik günlüğü — 1/3 genişlik. Gerçek log dizisi prop olarak gönderildi */}
           <div className="xl:col-span-1">
             <EtkinlikGunlugu aktifLoglar={gercekGecmisVeriler} />
           </div>
         </section>
 
-        {/* ======================================================
-            FOOTER
-        ====================================================== */}
-        <footer className="mt-8 border-t border-[#1e3a6e] pt-4">
-          <p className="text-center text-xs text-slate-600">
-            Akıllı Sınıf Otomasyon Sistemi • ESP32 + Firebase Realtime Database
+        <footer className="mt-8 border-t border-rose-100/60 pt-4">
+          <p className="text-center text-xs text-gray-400">
+            Akıllı Sınıf Otomasyon Sistemi • ESP32 + Firebase Realtime Database + LSTM AI
           </p>
         </footer>
 

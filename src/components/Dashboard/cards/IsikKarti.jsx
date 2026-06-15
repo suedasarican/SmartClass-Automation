@@ -1,22 +1,19 @@
-// ==============================================================
-//  src/components/Dashboard/cards/IsikKarti.jsx
-//  Kart 3: Işık Şiddeti (Lüks)
-// ==============================================================
-
 import { Sun, Moon, Sunrise } from "lucide-react";
 import StatusCard from "../StatusCard";
 import { cn } from "../../../utils/cn";
 
-// Lüks değerine göre ikon, renk ve açıklama
 function isikBilgisi(lux) {
-  if (lux === null || lux === undefined) return { renk: "text-slate-400", bg: "bg-slate-600/20", icon: Moon,    ikon: "text-slate-400", etiket: "Veri yok",    aciklama: "Sensör bekleniyor" };
-  if (lux < 50)   return { renk: "text-indigo-300", bg: "bg-indigo-500/15", icon: Moon,    ikon: "text-indigo-400", etiket: "Karanlık",   aciklama: "Aydınlatma gerekebilir" };
-  if (lux < 200)  return { renk: "text-amber-300",  bg: "bg-amber-500/15",  icon: Sunrise, ikon: "text-amber-400",  etiket: "Loş",        aciklama: "Düşük aydınlatma" };
-  if (lux < 500)  return { renk: "text-yellow-300", bg: "bg-yellow-500/15", icon: Sun,     ikon: "text-yellow-400", etiket: "Normal",     aciklama: "Yeterli aydınlatma" };
-  return           { renk: "text-orange-300", bg: "bg-orange-500/15", icon: Sun,     ikon: "text-orange-400", etiket: "Parlak",     aciklama: "Yüksek aydınlatma" };
+  if (lux === null || lux === undefined)
+    return { renk: "text-gray-400", bg: "bg-gray-100", icon: Moon,    ikon: "text-gray-400", etiket: "Veri yok",  aciklama: "Sensör bekleniyor",     bar: "bg-gray-300" };
+  if (lux < 50)
+    return { renk: "text-indigo-600", bg: "bg-indigo-100", icon: Moon,    ikon: "text-indigo-500", etiket: "Karanlık", aciklama: "Aydınlatma gerekebilir", bar: "bg-indigo-400" };
+  if (lux < 200)
+    return { renk: "text-amber-600",  bg: "bg-amber-100",  icon: Sunrise, ikon: "text-amber-500",  etiket: "Loş",      aciklama: "Düşük aydınlatma",      bar: "bg-amber-400" };
+  if (lux < 500)
+    return { renk: "text-yellow-600", bg: "bg-yellow-100", icon: Sun,     ikon: "text-yellow-500", etiket: "Normal",   aciklama: "Yeterli aydınlatma",    bar: "bg-yellow-400" };
+  return   { renk: "text-orange-600", bg: "bg-orange-100", icon: Sun,     ikon: "text-orange-500", etiket: "Parlak",   aciklama: "Yüksek aydınlatma",     bar: "bg-orange-400" };
 }
 
-// Lüks → çubuk yüzdesi: 0 → 0%, 1000 lüx → 100%
 function isikYuzdesi(lux) {
   if (!lux) return 0;
   return Math.min(100, (lux / 1000) * 100);
@@ -24,7 +21,7 @@ function isikYuzdesi(lux) {
 
 export default function IsikKarti({ veri, yukleniyor }) {
   const lux = veri?.isik_lux ?? null;
-  const { renk, bg, icon: IsikIkon, ikon, etiket, aciklama } = isikBilgisi(lux);
+  const { renk, bg, icon: IsikIkon, ikon, etiket, aciklama, bar } = isikBilgisi(lux);
   const yuzde = isikYuzdesi(lux);
 
   return (
@@ -37,47 +34,34 @@ export default function IsikKarti({ veri, yukleniyor }) {
       badge={yukleniyor ? "—" : etiket}
       badgeColor={
         yukleniyor
-          ? "bg-slate-700 text-slate-400"
+          ? "bg-gray-100 text-gray-400"
           : lux < 50
-          ? "bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-500/40"
+          ? "bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200"
           : lux < 200
-          ? "bg-amber-500/20 text-amber-300 ring-1 ring-amber-500/40"
+          ? "bg-amber-100 text-amber-700 ring-1 ring-amber-200"
           : lux < 500
-          ? "bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-500/40"
-          : "bg-orange-500/20 text-orange-300 ring-1 ring-orange-500/40"
+          ? "bg-yellow-100 text-yellow-700 ring-1 ring-yellow-200"
+          : "bg-orange-100 text-orange-700 ring-1 ring-orange-200"
       }
     >
       {yukleniyor ? (
         <LoadingPulse />
       ) : (
         <div className="flex flex-col gap-1">
-          {/* Büyük değer */}
           <div className="flex items-baseline gap-1">
             <span className={cn("text-4xl font-bold tracking-tight", renk)}>
               {lux !== null ? lux.toLocaleString("tr-TR") : "—"}
             </span>
-            <span className="text-lg font-medium text-slate-500">lüx</span>
+            <span className="text-lg font-medium text-gray-400">lüx</span>
           </div>
-
-          <p className="text-xs text-slate-500">{aciklama}</p>
-
-          {/* Işık seviyesi çubuğu */}
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <p className="text-xs text-gray-400">{aciklama}</p>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
             <div
-              className={cn(
-                "h-full rounded-full transition-all duration-700",
-                lux < 50
-                  ? "bg-indigo-400"
-                  : lux < 200
-                  ? "bg-amber-400"
-                  : lux < 500
-                  ? "bg-yellow-400"
-                  : "bg-orange-400"
-              )}
+              className={cn("h-full rounded-full transition-all duration-700", bar)}
               style={{ width: `${yuzde}%` }}
             />
           </div>
-          <div className="flex justify-between text-[10px] text-slate-600">
+          <div className="flex justify-between text-[10px] text-gray-300">
             <span>0 lüx</span>
             <span>1000 lüx</span>
           </div>
@@ -90,9 +74,9 @@ export default function IsikKarti({ veri, yukleniyor }) {
 function LoadingPulse() {
   return (
     <div className="flex flex-col gap-2 animate-pulse">
-      <div className="h-9 w-24 rounded-lg bg-slate-700/60" />
-      <div className="h-3 w-36 rounded bg-slate-700/40" />
-      <div className="mt-1 h-1.5 w-full rounded-full bg-slate-700/40" />
+      <div className="h-9 w-24 rounded-lg bg-rose-100/60" />
+      <div className="h-3 w-36 rounded bg-rose-100/40" />
+      <div className="mt-1 h-1.5 w-full rounded-full bg-rose-100/40" />
     </div>
   );
 }

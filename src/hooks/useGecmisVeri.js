@@ -3,31 +3,26 @@ import { ref, onValue, off } from "firebase/database";
 import { db } from "../firebase/firebase";
 
 export function useGecmisVeri(sinifId) {
-    const [gecmisVeriler, setGecmisVeriler] = useState([]);
+  const [gecmisVeriler, setGecmisVeriler] = useState([]);
 
-    useEffect(() => {
-        // /loglar/A101 yolunu dinliyoruz
-        const logRef = ref(db, `loglar/${sinifId}`);
+  useEffect(() => {
+    const logRef = ref(db, `loglar/${sinifId}`);
 
-        const abonelikIptal = onValue(logRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const hamVeri = snapshot.val();
+    const abonelikIptal = onValue(logRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const hamVeri = snapshot.val();
+        const veriDizisi = Object.values(hamVeri);
+        setGecmisVeriler(veriDizisi);
+      } else {
+        setGecmisVeriler([]);
+      }
+    });
 
-                // Firebase objesini diziye (array) çevir
-                // Object.values, rastgele üretilen Firebase ID'lerini atıp sadece verileri alır
-                const veriDizisi = Object.values(hamVeri);
+    return () => {
+      off(logRef);
+      abonelikIptal();
+    };
+  }, [sinifId]);
 
-                setGecmisVeriler(veriDizisi);
-            } else {
-                setGecmisVeriler([]);
-            }
-        });
-
-        return () => {
-            off(logRef);
-            abonelikIptal();
-        };
-    }, [sinifId]);
-
-    return gecmisVeriler;
+  return gecmisVeriler;
 }

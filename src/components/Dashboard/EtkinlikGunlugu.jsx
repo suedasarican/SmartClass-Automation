@@ -1,7 +1,3 @@
-// ==============================================================
-//  src/components/Dashboard/EtkinlikGunlugu.jsx
-// ==============================================================
-
 import { useState, useMemo } from "react";
 import {
   Users, UserX, Wind, Lightbulb, Thermometer,
@@ -10,13 +6,13 @@ import {
 import { cn } from "../../utils/cn";
 
 const OLAY_TIPLERI = {
-  giris: { icon: Users, color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-100", label: "Hareket Algılandı" },
-  cikis: { icon: UserX, color: "text-slate-500", bg: "bg-slate-50", border: "border-slate-200", label: "Hareket Yok" },
-  klima_acildi: { icon: Wind, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100", label: "Klima Aktif" },
-  klima_kapandi: { icon: Wind, color: "text-slate-400", bg: "bg-slate-50", border: "border-slate-200", label: "Klima Pasif" },
-  isik_acildi: { icon: Lightbulb, color: "text-amber-500", bg: "bg-amber-50", border: "border-amber-100", label: "Aydınlatma Aktif" },
-  isik_kapandi: { icon: Lightbulb, color: "text-slate-400", bg: "bg-slate-50", border: "border-slate-200", label: "Aydınlatma Pasif" },
-  guncelleme: { icon: Activity, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100", label: "Sensör Güncellemesi" },
+  giris:        { icon: Users,      color: "text-emerald-500", bg: "bg-emerald-50", border: "border-emerald-100", label: "Hareket Algılandı" },
+  cikis:        { icon: UserX,      color: "text-slate-500",   bg: "bg-slate-50",   border: "border-slate-200",  label: "Hareket Yok" },
+  klima_acildi: { icon: Wind,       color: "text-blue-500",    bg: "bg-blue-50",    border: "border-blue-100",   label: "Klima Aktif" },
+  klima_kapandi:{ icon: Wind,       color: "text-slate-400",   bg: "bg-slate-50",   border: "border-slate-200",  label: "Klima Pasif" },
+  isik_acildi:  { icon: Lightbulb,  color: "text-amber-500",   bg: "bg-amber-50",   border: "border-amber-100",  label: "Aydınlatma Aktif" },
+  isik_kapandi: { icon: Lightbulb,  color: "text-slate-400",   bg: "bg-slate-50",   border: "border-slate-200",  label: "Aydınlatma Pasif" },
+  guncelleme:   { icon: Activity,   color: "text-blue-500",    bg: "bg-blue-50",    border: "border-blue-100",   label: "Sensör Güncellemesi" },
 };
 
 function OlaySatiri({ olay, son }) {
@@ -42,35 +38,25 @@ function OlaySatiri({ olay, son }) {
   );
 }
 
-// DİKKAT: Prop olarak 'aktifLoglar' eklendi ve mock veriler silindi!
 export default function EtkinlikGunlugu({ aktifLoglar = [] }) {
   const [gosterHepsi, setGosterHepsi] = useState(false);
 
-  // Gelen JSON datasını "Giriş, Klima vs." gibi anlamlı objelere dönüştür
-  // useMemo, dizi değişmedikçe gereksiz hesaplamayı engeller
   const islenmisOlaylar = useMemo(() => {
     if (!aktifLoglar || aktifLoglar.length === 0) return [];
 
-    // Logları en yeniden eskiye sırala
     const siraliLoglar = [...aktifLoglar].reverse();
 
     return siraliLoglar.map((log, index) => {
       const date = log.zaman_damgasi ? new Date(log.zaman_damgasi) : new Date();
       const saatFormat = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-      // Temel bir mantık: Son durumlara bakarak tip belirle (Basitleştirildi)
       let tip = "guncelleme";
       let detay = `T: ${log.sicaklik}°C | Işık: %${log.isik_lux}`;
 
       if (log.aydinlatma_durumu === "ACIK") { tip = "isik_acildi"; detay = "Işıklar açık durumda."; }
-      if (log.hareket_durumu === 1) { tip = "giris"; detay = "Odada hareket tespit edildi."; }
+      if (log.hareket_durumu === 1)          { tip = "giris";       detay = "Odada hareket tespit edildi."; }
 
-      return {
-        id: index, // Gerçek ID olmadığı için index veriyoruz
-        tip: tip,
-        saat: saatFormat,
-        detay: detay
-      };
+      return { id: index, tip, saat: saatFormat, detay };
     });
   }, [aktifLoglar]);
 
@@ -81,7 +67,7 @@ export default function EtkinlikGunlugu({ aktifLoglar = [] }) {
       <div className="flex h-full min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white/90 shadow-xl shadow-rose-100/50 backdrop-blur-sm p-5 justify-center items-center">
         <p className="text-slate-400 font-medium text-sm">Etkinlik günlüğü bekleniyor...</p>
       </div>
-    )
+    );
   }
 
   return (

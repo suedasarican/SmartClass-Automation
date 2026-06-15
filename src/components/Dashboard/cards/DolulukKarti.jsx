@@ -1,8 +1,3 @@
-// ==============================================================
-//  src/components/Dashboard/cards/DolulukKarti.jsx
-//  Kart 1: Sınıf Doluluk Durumu (hareket_durumu → Dolu / Boş)
-// ==============================================================
-
 import { Users, UserX } from "lucide-react";
 import StatusCard from "../StatusCard";
 import { cn } from "../../../utils/cn";
@@ -13,44 +8,37 @@ export default function DolulukKarti({ veri, yukleniyor }) {
   return (
     <StatusCard
       icon={dolu ? Users : UserX}
-      iconBg={dolu ? "bg-emerald-500/15" : "bg-slate-600/20"}
-      iconColor={dolu ? "text-emerald-400" : "text-slate-500"}
+      iconBg={dolu ? "bg-emerald-100" : "bg-gray-100"}
+      iconColor={dolu ? "text-emerald-600" : "text-gray-400"}
       title="Sınıf Doluluk Durumu"
       live={!yukleniyor}
-      badge={dolu ? "Dolu" : "Boş"}
+      badge={yukleniyor ? "—" : dolu ? "Dolu" : "Boş"}
       badgeColor={
         yukleniyor
-          ? "bg-slate-700 text-slate-400"
+          ? "bg-gray-100 text-gray-400"
           : dolu
-          ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40"
-          : "bg-slate-600/30 text-slate-400 ring-1 ring-slate-500/30"
+          ? "bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200"
+          : "bg-gray-100 text-gray-500 ring-1 ring-gray-200"
       }
     >
       {yukleniyor ? (
         <LoadingPulse />
       ) : (
         <div className="flex flex-col gap-1">
-          {/* Ana durum göstergesi */}
           <div className="flex items-end gap-3">
             <span
               className={cn(
                 "text-4xl font-bold tracking-tight",
-                dolu ? "text-emerald-300" : "text-slate-500"
+                dolu ? "text-emerald-600" : "text-gray-400"
               )}
             >
               {dolu ? "Dolu" : "Boş"}
             </span>
           </div>
-
-          {/* İkincil bilgi */}
-          <p className="text-xs text-slate-500">
-            {dolu
-              ? "Sınıfta hareket algılandı"
-              : "Sınıfta hareket algılanmıyor"}
+          <p className="text-xs text-gray-400">
+            {dolu ? "Sınıfta hareket algılandı" : "Sınıfta hareket algılanmıyor"}
           </p>
-
-          {/* Görsel doluluk çubuğu */}
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-700",
@@ -64,15 +52,12 @@ export default function DolulukKarti({ veri, yukleniyor }) {
   );
 }
 
-// ---------------------------------------------------------------
-//  Yükleme iskelet animasyonu
-// ---------------------------------------------------------------
 function LoadingPulse() {
   return (
     <div className="flex flex-col gap-2 animate-pulse">
-      <div className="h-9 w-24 rounded-lg bg-slate-700/60" />
-      <div className="h-3 w-40 rounded bg-slate-700/40" />
-      <div className="mt-1 h-1.5 w-full rounded-full bg-slate-700/40" />
+      <div className="h-9 w-24 rounded-lg bg-rose-100/60" />
+      <div className="h-3 w-40 rounded bg-rose-100/40" />
+      <div className="mt-1 h-1.5 w-full rounded-full bg-rose-100/40" />
     </div>
   );
 }

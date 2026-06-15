@@ -12,10 +12,28 @@ dist
 dist-ssr
 *.local
 
-# Firebase / Ortam değişkenleri — API anahtarlarını koru!
+# Firebase / Ortam değişkenleri
 .env
 .env.local
 .env.production
+
+# Firebase servis hesabı anahtarı — ASLA commit etme!
+serviceAccountKey.json
+
+# AI model dosyaları (büyük ikili dosyalar)
+*.h5
+*.keras
+*.pkl
+
+# Eğitim verisi ve çıktı dosyaları
+smart_class_dataset.csv
+egitim_gecmisi.csv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # Editor directories and files
 .vscode/*
